@@ -71,6 +71,10 @@ if (typeof NAMESPACE === 'undefined' || NAMESPACE === null
 }
 
 
+//-------------------------------------------TEST CASES-------------------------------------
+
+// Please find the test cases below 
+
 
 QUnit.test('User Login', function(assert) {
 
@@ -117,7 +121,7 @@ QUnit.test('User Login', function(assert) {
 
 
 /**
- *       Test Result
+ *------------------------------------------ TEST RESULT--------------------------------------
  * 
  * Type of user_ref is object
  * Got logged in user id

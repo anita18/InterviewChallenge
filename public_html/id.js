@@ -8,10 +8,12 @@
  *  It'll not throw error if we use typeof as function,but that's not correct.
  *   
  */
-if (typeof NAMESPACE === 'undefined' || NAMESPACE === null
-        ) {
-
+if (typeof NAMESPACE === 'undefined' || NAMESPACE === null) {
+    console.log("namespace reloaded")
     NAMESPACE = {};
+}
+
+if (typeof NAMESPACE.id === 'undefined' || NAMESPACE.id === null) {
 
     /**
      * id() function will be associated with the user and can be called for specific user id, but

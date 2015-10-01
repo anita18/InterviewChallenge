@@ -10,7 +10,7 @@
  */
 
 (function() {
-    
+
     if (typeof NAMESPACE === 'undefined' || NAMESPACE === null) {
         NAMESPACE = {};
     }
@@ -22,7 +22,8 @@
          * As you have mentioned that _all_ids should be protected so that others can't access that, but still allow each id instance to see a single _all_ids,
          * So we have made _all_ids to be local to self execuiting block and id function can have single _all_ids access.
          */
-      var _all_ids = new Array();
+//        var _all_ids = new Array();
+        var user_sessions = {};
 
         var id = function(id) {
 
@@ -32,8 +33,31 @@
             /**
              * Stores the user login id into active user array list.
              */
-            _all_ids.push(_id);
+//            _all_ids.push(_id);
 
+            if (user_sessions[_id] !== undefined && user_sessions[_id] !== null) {
+                var session_array = user_sessions[_id];
+                var flag = true;
+
+                while (flag) {
+
+                    var random_no = Math.floor(Math.random() * 100) + 1; // taken the limit as 100 for example
+
+                    if (session_array.indexOf(random_no) === -1) {
+                        persona.sessionId = random_no;
+                        session_array.push(random_no)
+                        flag = false;
+                    }
+                }
+                user_sessions[_id] = session_array;
+
+            } else {
+
+                user_sessions[_id] = [];
+                var sessionId = Math.floor(Math.random() * 100) + 1; // taken the limit as 100 for example
+                persona.sessionId = sessionId;
+                user_sessions[_id].push(sessionId);
+            }
             var getId = function() {
                 return _id;
             };
@@ -42,15 +66,17 @@
             var _closed = false;
 
             var close = function() {
+                
 
                 /**
-                 * delete operator on array, only deletes the array element, but does not modifies array length. 
-                 * splice(using element index) deletes the element and also accordingly updates array length.
+                 * Got session id as parameter from user persona object and removed user that session from the map 
+                 * 
                  */
-                var index = _all_ids.indexOf(getId());
-                _all_ids.splice(index, 1);
-
-
+                var id = getId();
+                var session_array = user_sessions[id];
+                var index = session_array.indexOf(this.sessionId);
+                session_array.splice(index, 1);
+                user_sessions[id] = session_array;
                 /**
                  *  Here this keyword refer to global window object, which is different from the id() function scope. 
                  *  So the _closed variable used at line 66 in this file, and the _closed variable used at line 32 in this file, 
@@ -105,10 +131,19 @@ QUnit.test('User Login', function(assert) {
     assert.strictEqual(user2_ref.getId(), 3, 'Another User Loged in with id 3');
 
 
+    var user3_ref = NAMESPACE['id'](2);
+
+    assert.strictEqual(typeof user3_ref, "object", 'Type of user_ref is object');
+
+    /**
+     * We can get the logged in user Id any time using the user_ref variable
+     */
+    assert.strictEqual(user3_ref.getId(), 2, 'Again another user logged in with id same 2');
+
     /**
      * First user logs out from the system
      */
-    assert.strictEqual(user1_ref.close(), true, 'User 1 logs out of the system');
+    assert.strictEqual(user3_ref.close(), true, 'User3_ref logs out of the system');
 
 });
 
